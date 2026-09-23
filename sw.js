@@ -1,4 +1,4 @@
-const CACHE_NAME = 'dive2026-v2';
+const CACHE_NAME = 'dive2026-v3';
 const BASE = '/dive2026';
 
 const PRECACHE_URLS = [
