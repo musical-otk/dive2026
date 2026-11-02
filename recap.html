@@ -55,13 +55,12 @@
   .ph{width:136px;height:181px;border-radius:16px;overflow:hidden;background:#EAEEF2;position:relative;}
   .ph img{width:100%;height:100%;object-fit:cover;display:block;}
   .tile.zero .ph img{filter:grayscale(.85) opacity(.55);}
-  .badge{position:absolute;right:8px;bottom:8px;min-width:46px;height:46px;border-radius:23px;padding:0 10px;
-         background:#0284c7;color:#fff;font-size:26px;font-weight:800;display:flex;align-items:center;justify-content:center;}
-  .tile.zero .badge{background:rgba(19,32,44,.55);}
   .tile.top .ph{box-shadow:0 0 0 4px #0284c7;}
   .nm{display:flex;justify-content:space-between;align-items:baseline;margin-top:10px;}
   .nm b{font-size:21px;font-weight:700;}
-  .nm span{font-size:17px;color:#8A97A6;}
+  .nm span{font-size:17px;color:#8A97A6;white-space:nowrap;}
+  .nm em{font-style:normal;font-size:24px;font-weight:800;color:#0284c7;}
+  .tile.zero .nm em{color:#8A97A6;}
 
   .floor .fl{font-size:22px;font-weight:800;letter-spacing:3px;color:#0284c7;margin-bottom:12px;}
   .floor .hm-row{display:flex;align-items:center;margin-bottom:3px;}
@@ -99,7 +98,7 @@
 const SHOW = {
   prefix: 'dive_',
   kicker: 'MUSICAL · DIVE',
-  title:  '나의 다이브',
+  title:  '다이브',
   period: '2026.08.18 — 11.08',
   venue:  '링크더스페이스 1관',
   file:   '다이브_정산판',
@@ -188,9 +187,8 @@ function render() {
     return `<div class="role"><h2>${esc(role.label)}</h2><div class="tiles">${role.actors.map((a, i) => {
       const mine = counts[i], of = schedule.filter(s => s[role.key] === a).length;
       const cls = mine === 0 ? ' zero' : (mine === max && counts.filter(c => c === max).length === 1 ? ' top' : '');
-      return `<div class="tile${cls}"><div class="ph"><img src="recap/${opts.set}/${encodeURIComponent(a)}.jpg" alt="">
-                <div class="badge">${mine}</div></div>
-              <div class="nm"><b>${esc(a)}</b><span>/ ${of}</span></div></div>`;
+      return `<div class="tile${cls}"><div class="ph"><img src="recap/${opts.set}/${encodeURIComponent(a)}.jpg" alt=""></div>
+              <div class="nm"><b>${esc(a)}</b><span><em>${mine}</em> / ${of}</span></div></div>`;
     }).join('')}</div></div>`;
   }).join('');
 
