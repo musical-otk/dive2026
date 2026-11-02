@@ -18,9 +18,6 @@
   .bar{position:sticky;top:0;z-index:5;background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 14px;
        display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;}
   .bar a{color:var(--text2);text-decoration:none;font-size:13px;margin-right:auto;}
-  .seg{display:flex;background:var(--bg3);border-radius:9px;padding:3px;}
-  .seg button{border:0;background:none;padding:6px 11px;border-radius:7px;font-size:13px;color:var(--text2);cursor:pointer;font-family:inherit;}
-  .seg button.on{background:var(--bg2);color:var(--text);font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.08);}
   .save{border:0;background:var(--accent);color:#fff;font-weight:700;border-radius:9px;padding:8px 14px;font-size:13px;cursor:pointer;font-family:inherit;}
   .save:disabled{opacity:.5;}
   .stage{padding:16px;}
@@ -76,10 +73,6 @@
 <body>
 <div class="bar">
   <a href="./">‹ 앱으로</a>
-  <div class="seg" id="seg-photo">
-    <button data-set="profile" class="on">프로필</button>
-    <button data-set="concept">컨셉컷</button>
-  </div>
   <button class="save" id="btn-save" disabled>이미지 저장</button>
 </div>
 <div class="stage"><div class="frame" id="frame"><div class="msg" id="msg">기록을 불러오는 중…</div><div class="scaler" id="scaler"></div></div></div>
@@ -96,13 +89,9 @@ const SHOW = {
   period: '2026.08.18 — 11.08',
   venue:  '링크더스페이스 1관',
   file:   '다이브_정산판',
-  photoSets: { profile: '프로필', concept: '컨셉컷' },   // recap/<set>/<배우>.jpg — 공식 계정 사진
+  photoDir: 'recap/profile',   // <배우>.jpg — 공식 계정 프로필 사진
 };
 
-const OPT_KEY = SHOW.prefix + 'recapOpts';
-const opts = (() => { try { return Object.assign({ set: 'profile' }, JSON.parse(localStorage.getItem(OPT_KEY)) || {}); }
-                     catch { return { set: 'profile' }; } })();
-function saveOpts() { try { localStorage.setItem(OPT_KEY, JSON.stringify(opts)); } catch {} }
 
 let W = null, seatTemplates = [];
 const $ = id => document.getElementById(id);
@@ -178,7 +167,7 @@ function render() {
     const counts = role.actors.map(a => recs.filter(r => r[role.key] === a).length);
     return `<div class="role"><h2>${esc(role.label)}</h2><div class="tiles">${role.actors.map((a, i) => {
       const mine = counts[i], of = schedule.filter(s => s[role.key] === a).length;
-      return `<div class="tile"><div class="ph"><img src="recap/${opts.set}/${encodeURIComponent(a)}.jpg" alt=""></div>
+      return `<div class="tile"><div class="ph"><img src="${SHOW.photoDir}/${encodeURIComponent(a)}.jpg" alt=""></div>
               <div class="nm"><b>${esc(a)}</b><span><em>${mine || ''}</em> / ${of}</span></div></div>`;
     }).join('')}</div></div>`;
   }).join('');
@@ -244,11 +233,6 @@ async function saveImage() {
 }
 
 // ── 시작 ──
-document.querySelectorAll('#seg-photo button').forEach(b => {
-  b.classList.toggle('on', b.dataset.set === opts.set);
-  b.onclick = () => { opts.set = b.dataset.set; saveOpts();
-    document.querySelectorAll('#seg-photo button').forEach(x => x.classList.toggle('on', x === b)); render(); };
-});
 $('btn-save').onclick = saveImage;
 
 $('app').addEventListener('load', () => {
