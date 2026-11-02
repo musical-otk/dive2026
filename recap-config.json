@@ -1,0 +1,12 @@
+{
+  "prefix": "dive_",
+  "icon": "🫧",
+  "kicker": "MUSICAL · DIVE",
+  "title": "다이브",
+  "period": "2026.08.18 — 11.08",
+  "venue": "링크더스페이스 1관",
+  "theme": {
+    "ac": "#0284c7", "ac_soft": "#CDE6F5", "track": "#D3E8F4", "grad": "#DDF0FB", "card": "#FBFDFF",
+    "seats": ["#E6EDF3", "#BFE3F7", "#7CC8EE", "#38ACE2", "#0B8BCB", "#05608F"]
+  }
+}
