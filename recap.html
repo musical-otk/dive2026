@@ -21,8 +21,6 @@
   .seg{display:flex;background:var(--bg3);border-radius:9px;padding:3px;}
   .seg button{border:0;background:none;padding:6px 11px;border-radius:7px;font-size:13px;color:var(--text2);cursor:pointer;font-family:inherit;}
   .seg button.on{background:var(--bg2);color:var(--text);font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.08);}
-  .chk{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text2);cursor:pointer;}
-  .chk input{width:16px;height:16px;accent-color:var(--accent);}
   .save{border:0;background:var(--accent);color:#fff;font-weight:700;border-radius:9px;padding:8px 14px;font-size:13px;cursor:pointer;font-family:inherit;}
   .save:disabled{opacity:.5;}
   .stage{padding:16px;}
@@ -71,7 +69,6 @@
   .floors{display:flex;flex-direction:column;gap:26px;}
   .legend{font-size:16px;color:#57677A;text-align:right;}
   .legend > div:first-child{display:flex;gap:14px;flex-wrap:wrap;justify-content:flex-end;}
-  .legend .asof{margin-top:10px;color:#8A97A6;}
   .legend i{display:inline-block;width:18px;height:18px;border-radius:4px;vertical-align:-3px;margin-right:5px;}
   .ft{margin-top:40px;padding-top:18px;border-top:1px solid #DCE3EA;display:flex;justify-content:space-between;font-size:16px;color:#8A97A6;}
 </style>
@@ -83,7 +80,6 @@
     <button data-set="profile" class="on">프로필</button>
     <button data-set="concept">컨셉컷</button>
   </div>
-  <label class="chk"><input type="checkbox" id="opt-future"> 볼 예정 포함</label>
   <button class="save" id="btn-save" disabled>이미지 저장</button>
 </div>
 <div class="stage"><div class="frame" id="frame"><div class="msg" id="msg">기록을 불러오는 중…</div><div class="scaler" id="scaler"></div></div></div>
@@ -104,19 +100,18 @@ const SHOW = {
 };
 
 const OPT_KEY = SHOW.prefix + 'recapOpts';
-const opts = (() => { try { return Object.assign({ set: 'profile', future: false }, JSON.parse(localStorage.getItem(OPT_KEY)) || {}); }
-                     catch { return { set: 'profile', future: false }; } })();
+const opts = (() => { try { return Object.assign({ set: 'profile' }, JSON.parse(localStorage.getItem(OPT_KEY)) || {}); }
+                     catch { return { set: 'profile' }; } })();
 function saveOpts() { try { localStorage.setItem(OPT_KEY, JSON.stringify(opts)); } catch {} }
 
 let W = null, seatTemplates = [];
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
 
-// 정산에 넣을 기록 — 양도·미정은 빼고, '볼 예정 포함' 이 꺼져 있으면 오늘까지만
+// 정산에 넣을 기록 — 막공까지 예매한 회차 전부 (양도·미정은 뺀다)
 function countedRecords() {
-  const today = W.localDate();
   return W.getRecords().filter(r =>
-    r.date && !W.isTransferred(r) && r.isBooked !== false && (opts.future || r.date <= today));
+    r.date && !W.isTransferred(r) && r.isBooked !== false);
 }
 
 // 앱의 히트맵을 층마다 한 번씩 그려 배치(빈칸·통로 포함)를 빌려온다. 개수는 여기서 다시 칠한다.
@@ -205,7 +200,7 @@ function render() {
     <!-- 배역과 좌석도를 한 흐름에 둔다 — 배우 수가 적은 배역 옆 빈자리를 좌석도 묶음(층을 위아래로)이 채운다 -->
     <div class="roles">${rolesHtml}
       <div class="floors">${seatTemplates.map(t => `<div class="floor"><div class="fl">${esc(t.floor.replace('층', 'F'))}</div>${seatHtml(t, seatCount)}</div>`).join('')}
-        <div class="legend"><div>${legend}</div><div class="asof">${opts.future ? '볼 예정 회차 포함' : `${md(W.localDate())} 기준`}</div></div>
+        <div class="legend"><div>${legend}</div></div>
       </div></div>
     <div class="ft"><span>${esc(SHOW.title)} 정산판</span><span>관극 다이어리</span></div>
   </div>`;
@@ -254,8 +249,6 @@ document.querySelectorAll('#seg-photo button').forEach(b => {
   b.onclick = () => { opts.set = b.dataset.set; saveOpts();
     document.querySelectorAll('#seg-photo button').forEach(x => x.classList.toggle('on', x === b)); render(); };
 });
-$('opt-future').checked = opts.future;
-$('opt-future').onchange = e => { opts.future = e.target.checked; saveOpts(); render(); };
 $('btn-save').onclick = saveImage;
 
 $('app').addEventListener('load', () => {
