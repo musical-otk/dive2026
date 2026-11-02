@@ -54,12 +54,10 @@
   .tile{width:136px;}
   .ph{width:136px;height:181px;border-radius:16px;overflow:hidden;background:#EAEEF2;position:relative;}
   .ph img{width:100%;height:100%;object-fit:cover;display:block;}
-  .tile.zero .ph img{filter:grayscale(.85) opacity(.55);}
   .nm{display:flex;justify-content:space-between;align-items:baseline;margin-top:10px;}
   .nm b{font-size:21px;font-weight:700;}
   .nm span{font-size:17px;color:#8A97A6;white-space:nowrap;}
   .nm em{font-style:normal;font-size:24px;font-weight:800;color:#0284c7;}
-  .tile.zero .nm em{color:#8A97A6;}
 
   .floor .fl{font-size:22px;font-weight:800;letter-spacing:3px;color:#0284c7;margin-bottom:12px;}
   .floor .hm-row{display:flex;align-items:center;margin-bottom:3px;}
@@ -185,9 +183,8 @@ function render() {
     const counts = role.actors.map(a => recs.filter(r => r[role.key] === a).length);
     return `<div class="role"><h2>${esc(role.label)}</h2><div class="tiles">${role.actors.map((a, i) => {
       const mine = counts[i], of = schedule.filter(s => s[role.key] === a).length;
-      const cls = mine === 0 ? ' zero' : '';
-      return `<div class="tile${cls}"><div class="ph"><img src="recap/${opts.set}/${encodeURIComponent(a)}.jpg" alt=""></div>
-              <div class="nm"><b>${esc(a)}</b><span><em>${mine}</em> / ${of}</span></div></div>`;
+      return `<div class="tile"><div class="ph"><img src="recap/${opts.set}/${encodeURIComponent(a)}.jpg" alt=""></div>
+              <div class="nm"><b>${esc(a)}</b><span><em>${mine || ''}</em> / ${of}</span></div></div>`;
     }).join('')}</div></div>`;
   }).join('');
 
