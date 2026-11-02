@@ -71,7 +71,8 @@
   .floor .hm-cell.v3{background:#38ACE2 !important;} .floor .hm-cell.v4{background:#0B8BCB !important;}
   .floor .hm-cell.v5{background:#05608F !important;}
   .floor .void{visibility:hidden;}
-  .legend{align-self:flex-end;font-size:16px;color:#57677A;margin-left:auto;text-align:right;}
+  .floors{display:flex;flex-direction:column;gap:26px;}
+  .legend{font-size:16px;color:#57677A;text-align:right;}
   .legend > div:first-child{display:flex;gap:14px;flex-wrap:wrap;justify-content:flex-end;}
   .legend .asof{margin-top:10px;color:#8A97A6;}
   .legend i{display:inline-block;width:18px;height:18px;border-radius:4px;vertical-align:-3px;margin-right:5px;}
@@ -206,9 +207,11 @@ function render() {
         <div class="ring-in"><div class="lb">TOTAL</div><div class="n">${total}</div><div class="of">/ ${all}회</div></div>
       </div>
     </div>
-    <!-- 배역과 좌석도를 한 흐름에 둔다 — 배우 수가 적은 배역 옆 빈자리를 좌석도가 채운다 -->
-    <div class="roles">${rolesHtml}${seatTemplates.map(t => `<div class="floor"><div class="fl">${esc(t.floor.replace('층', 'F'))}</div>${seatHtml(t, seatCount)}</div>`).join('')}
-      <div class="legend"><div>${legend}</div><div class="asof">${opts.future ? '볼 예정 회차 포함' : `${md(W.localDate())} 기준`}</div></div></div>
+    <!-- 배역과 좌석도를 한 흐름에 둔다 — 배우 수가 적은 배역 옆 빈자리를 좌석도 묶음(층을 위아래로)이 채운다 -->
+    <div class="roles">${rolesHtml}
+      <div class="floors">${seatTemplates.map(t => `<div class="floor"><div class="fl">${esc(t.floor.replace('층', 'F'))}</div>${seatHtml(t, seatCount)}</div>`).join('')}
+        <div class="legend"><div>${legend}</div><div class="asof">${opts.future ? '볼 예정 회차 포함' : `${md(W.localDate())} 기준`}</div></div>
+      </div></div>
     <div class="ft"><span>${esc(SHOW.title)} 정산판</span><span>관극 다이어리</span></div>
   </div>`;
   fit();
